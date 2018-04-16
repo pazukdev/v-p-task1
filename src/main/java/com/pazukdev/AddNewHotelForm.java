@@ -44,13 +44,16 @@ public class AddNewHotelForm extends FormLayout {
         addComponents(name, address, rating, category, operatesFrom, url, description, buttons);
 
         url.setValueChangeMode(ValueChangeMode.BLUR);
+        //name.setRequiredIndicatorVisible(true);
+        //delete.setVisible(false);
+        //save.setVisible(false);
+
     }
 
     public void setHotel(Hotel hotel) {
         this.hotel=hotel;
         binder.setBean(hotel);
-
-        // Show delete button for only hotels already in the database
+        if(!name.isEmpty()) save.setVisible(true);
         delete.setVisible(hotel.isPersisted());
         setVisible(true);
         name.selectAll();
