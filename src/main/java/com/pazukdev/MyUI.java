@@ -60,7 +60,7 @@ public class MyUI extends UI {
         Button addHotelButton = new Button("Add new hotel");
         addHotelButton.addClickListener(e -> {
             grid.asSingleSelect().clear();
-            form.setHotel(new Hotel());
+            form.setNewHotel(new Hotel());
         });
 
         HorizontalLayout toolbar = new HorizontalLayout(filtering, addHotelButton);
@@ -83,8 +83,11 @@ public class MyUI extends UI {
         grid.asSingleSelect().addValueChangeListener(event -> {
             if (event.getValue() == null) {
                 form.setVisible(false);
+
             } else {
                 form.setHotel(event.getValue());
+
+                form.setButtonsVisiblity();
             }
         });
 

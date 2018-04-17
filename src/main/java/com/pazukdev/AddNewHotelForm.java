@@ -1,6 +1,7 @@
 package com.pazukdev;
 
 import com.vaadin.data.Binder;
+import com.vaadin.data.ValidationException;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.shared.ui.ValueChangeMode;
 import com.vaadin.ui.*;
@@ -15,7 +16,7 @@ public class AddNewHotelForm extends FormLayout {
     private TextField rating = new TextField("Rating");
     private NativeSelect<HotelCategory> category = new NativeSelect<>("Hotel category");
     private DateField operatesFrom = new DateField("Operates from");
-    TextField url = new TextField("URL");
+    private TextField url = new TextField("URL");
     private TextArea description = new TextArea("Description");
 
 
@@ -43,21 +44,90 @@ public class AddNewHotelForm extends FormLayout {
         HorizontalLayout buttons = new HorizontalLayout(save, delete);
         addComponents(name, address, rating, category, operatesFrom, url, description, buttons);
 
-        url.setValueChangeMode(ValueChangeMode.BLUR);
-        //name.setRequiredIndicatorVisible(true);
-        //delete.setVisible(false);
-        //save.setVisible(false);
+        name.setValueChangeMode(ValueChangeMode.EAGER);
+        name.setRequiredIndicatorVisible(true);
+        address.setValueChangeMode(ValueChangeMode.EAGER);
+        rating.setValueChangeMode(ValueChangeMode.EAGER);
+        url.setValueChangeMode(ValueChangeMode.EAGER);
+        description.setValueChangeMode(ValueChangeMode.EAGER);
+
+        delete.setVisible(false);
+        save.setVisible(false);
 
     }
 
     public void setHotel(Hotel hotel) {
         this.hotel=hotel;
-        binder.setBean(hotel);
-        if(!name.isEmpty()) save.setVisible(true);
-        delete.setVisible(hotel.isPersisted());
+        binder.readBean(hotel);
+
+        name.addValueChangeListener(event -> {
+            save.setVisible(true);
+            delete.setVisible(false);
+        });
+
+        name.addValueChangeListener(event -> {
+            if(name.isEmpty()) save.setVisible(false);
+        });
+        save.setVisible(false);
+        delete.setVisible(false);
+
+        address.addValueChangeListener(event -> {
+            save.setVisible(true);
+            delete.setVisible(false);
+        });
+
+        rating.addValueChangeListener(event -> {
+            save.setVisible(true);
+            delete.setVisible(false);
+        });
+
+        category.addValueChangeListener(event -> {
+            save.setVisible(true);
+            delete.setVisible(false);
+        });
+
+        operatesFrom.addValueChangeListener(event -> {
+            save.setVisible(true);
+            delete.setVisible(false);
+        });
+
+        url.addValueChangeListener(event -> {
+            save.setVisible(true);
+            delete.setVisible(false);
+        });
+
+        description.addValueChangeListener(event -> {
+            save.setVisible(true);
+            delete.setVisible(false);
+        });
+
+        //delete.setVisible(hotel.isPersisted());
         setVisible(true);
         name.selectAll();
     }
+
+
+
+    public void setNewHotel(Hotel hotel) {
+        this.hotel=hotel;
+        binder.readBean(hotel);
+
+        name.addValueChangeListener(event -> {
+            save.setVisible(true);
+            delete.setVisible(false);
+        });
+
+        name.addValueChangeListener(event -> {
+            if(name.isEmpty()) save.setVisible(false);
+        });
+        save.setVisible(false);
+        delete.setVisible(false);
+
+        setVisible(true);
+        name.selectAll();
+    }
+
+
 
     private void delete() {
         service.delete(hotel);
@@ -66,8 +136,20 @@ public class AddNewHotelForm extends FormLayout {
     }
 
     private void save() {
+        try {
+            binder.writeBean(hotel);
+        } catch (ValidationException e) {
+            e.printStackTrace();
+        }
         service.save(hotel);
         myUI.updateList();
         setVisible(false);
     }
+
+    void setButtonsVisiblity() {
+        save.setVisible(false);
+        delete.setVisible(true);
+    }
+
+
 }
