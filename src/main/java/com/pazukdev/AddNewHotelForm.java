@@ -22,6 +22,7 @@ public class AddNewHotelForm extends FormLayout {
 
     private Button save = new Button("Save");
     private Button delete = new Button("Delete");
+    private Button close = new Button("Close");
 
     private HotelService service = HotelService.getInstance();
     private Hotel hotel;
@@ -36,12 +37,15 @@ public class AddNewHotelForm extends FormLayout {
 
         save.setStyleName(ValoTheme.BUTTON_PRIMARY);
         save.setClickShortcut(ShortcutAction.KeyCode.ENTER);
-
         save.addClickListener(e -> this.save());
+
         delete.addClickListener(e -> this.delete());
 
+        close.setClickShortcut(ShortcutAction.KeyCode.ESCAPE);
+        close.addClickListener(e -> this.close());
+
         setSizeUndefined();
-        HorizontalLayout buttons = new HorizontalLayout(save, delete);
+        HorizontalLayout buttons = new HorizontalLayout(save, delete, close);
         addComponents(name, address, rating, category, operatesFrom, url, description, buttons);
 
         name.setValueChangeMode(ValueChangeMode.EAGER);
@@ -127,7 +131,9 @@ public class AddNewHotelForm extends FormLayout {
         name.selectAll();
     }
 
-
+    private void close() {
+        setVisible(false);
+    }
 
     private void delete() {
         service.delete(hotel);
