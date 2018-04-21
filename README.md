@@ -1,4 +1,5 @@
-vaadin-first-app
+vaadin-project
+task#1
 
 1. Hotel description field - done
 2. links in Grid - done
